@@ -108,7 +108,7 @@ export default function BookHomam() {
               <label className="text-gray-700 font-bold text-sm">Select Vedic Pandit</label>
               <select name="panditName" value={formData.panditName} onChange={handleChange} required className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer">
                 <option value="" disabled>-- Choose a Pandit --</option>
-                <option value="Ajai Pattahchariyar">Ajai Pattahchariyar</option>
+                <option value="Ajai Pattahchariyar">Ajai Pattachariyar</option>
                 <option value="Rajasekaran Iyengar">Rajasekaran Iyengar</option>
                 <option value="Murali Shivachareyar">Murali Shivachareyar</option>
                 <option value="Babu Iyer">Babu Iyer</option>
