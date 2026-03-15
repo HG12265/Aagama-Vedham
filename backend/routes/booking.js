@@ -90,4 +90,50 @@ router.get('/my-bookings', verifyToken, async (req, res) => {
     }
 });
 
+router.get('/all-bookings', verifyToken, async (req, res) => {
+    try {
+        // Role 'admin' ah irundha mattum thaan data anuppuvom (Security)
+        if (req.user.role !== 'admin') return res.status(403).json({ message: "Access Denied! Admins only ❌" });
+        
+        const allBookings = await Booking.find().sort({ createdAt: -1 });
+        res.status(200).json(allBookings);
+    } catch (err) {
+        res.status(500).json({ message: "Server Error", error: err.message });
+    }
+});
+
+router.put('/update-status/:id', verifyToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') return res.status(403).json({ message: "Access Denied! Admins only ❌" });
+        
+        const { status } = req.body;
+        const bookingId = req.params.id;
+
+        // Database-la status-a update pandradhu
+        const updatedBooking = await Booking.findByIdAndUpdate(bookingId, { status }, { new: true });
+        
+        if (!updatedBooking) return res.status(404).json({ message: "Booking not found!" });
+
+        // Status update aana udane Customer-ku Email anuppura logic ✉️
+        const user = await User.findById(updatedBooking.userId);
+        if(user) {
+            const statusColor = status === 'Confirmed' ? 'blue' : status === 'Completed' ? 'green' : 'red';
+            const statusHtml = `
+                <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ffedd5; border-radius: 10px;">
+                    <h2 style="color: #ea580c;">Aagama Vedham 🕉️</h2>
+                    <h3>Namaskaram ${updatedBooking.userName},</h3>
+                    <p>The status of your booking for <b>${updatedBooking.homamName}</b> has been updated!</p>
+                    <p>Current Status: <b style="color: ${statusColor}; font-size: 18px;">${status}</b></p>
+                    <p>May the divine blessings be with you! ✨</p>
+                </div>
+            `;
+            await sendEmail(user.email, `Booking Status Updated: ${status} 🙏`, statusHtml);
+        }
+
+        res.status(200).json({ message: `Status updated to ${status}! ✅`, booking: updatedBooking });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error", error: err.message });
+    }
+});
+
 module.exports = router;

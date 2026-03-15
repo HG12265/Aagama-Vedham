@@ -36,18 +36,18 @@ export default function Navbar() {
             
             {token ? (
               <>
-                <Link to="/book" className="hover:text-orange-600 transition duration-300">Book Homam</Link>
-                <Link to="/my-bookings" className="hover:text-orange-600 transition duration-300">My Bookings</Link>
-                
-                {/* Compact Logout Button with User Name */}
-                <button 
-                  onClick={handleLogout} 
-                  className="bg-orange-600 text-white px-5 py-2 rounded-full shadow-md hover:bg-orange-700 transition flex items-center gap-2 group"
-                >
+                {user?.role === 'admin' ? (
+                  <Link to="/admin" onClick={closeMenu} className="text-orange-600 font-bold hover:text-orange-800 transition duration-300">👑 Admin Dashboard</Link>
+                ) : (
+                  <>
+                    <Link to="/book" onClick={closeMenu} className="hover:text-orange-600 transition duration-300">Book Homam</Link>
+                    <Link to="/my-bookings" onClick={closeMenu} className="hover:text-orange-600 transition duration-300">My Bookings</Link>
+                  </>
+                )}
+    
+                <button onClick={handleLogout} className="bg-orange-600 text-white px-5 py-2 rounded-full shadow-md hover:bg-orange-700 transition flex items-center gap-2 group">
                   <span>Logout</span>
-                  <span className="text-xs bg-orange-800 text-orange-100 px-2 py-0.5 rounded-full group-hover:bg-orange-900">
-                    {user?.name}
-                  </span>
+                  <span className="text-xs bg-orange-800 text-orange-100 px-2 py-0.5 rounded-full group-hover:bg-orange-900">{user?.name}</span>
                 </button>
               </>
             ) : (

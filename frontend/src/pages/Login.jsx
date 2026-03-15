@@ -32,7 +32,11 @@ export default function Login() {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         
         // Login success aana udane Booking page-ku anuppidrom
-        setTimeout(() => navigate('/book'), 1000); 
+        if (res.data.user.role === 'admin') {
+            setTimeout(() => navigate('/admin'), 1000); 
+        } else {
+            setTimeout(() => navigate('/book'), 1000); 
+        }
 
       } else {
         // REGISTER API CALL
