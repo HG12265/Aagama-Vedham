@@ -8,6 +8,7 @@ const bookingSchema = new mongoose.Schema({
     homamName: { type: String, required: true },
     bookingDate: { type: String, required: true },
     address: { type: String, required: true },
+    transactionId: { type: String, required: true },
     status: { type: String, default: 'Pending' }
 }, { timestamps: true });
 
