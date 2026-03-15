@@ -3,17 +3,18 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
     port: 587,
-    secure: false, // 587 port-ku false thaan irukkanum
+    secure: false, 
     auth: {
-        user: 'aagamavedham@gmail.com', // Un official mail id
-        pass: process.env.BREVO_SMTP_PASS, // .env la vacha key
+        // INGA THAAN MATHI IRUKKEN 👇
+        user: 'a4f7a3001@smtp-brevo.com', 
+        pass: process.env.BREVO_SMTP_PASS, 
     },
 });
 
 const sendEmail = async (to, subject, htmlContent) => {
     try {
         await transporter.sendMail({
-            from: '"Aagama Vedham" <aagamavedham@gmail.com>',
+            from: '"Aagama Vedham" <aagamavedham@gmail.com>', // Idhu un Gmail aagave irukkatum
             to: to,
             subject: subject,
             html: htmlContent,
