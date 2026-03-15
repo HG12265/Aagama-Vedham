@@ -15,7 +15,7 @@ export default function BookHomam() {
 
   // ⚠️ INGA UN ORIGINAL GPAY UPI ID POTTUKKO (eg: 9876543210@okaxis) ⚠️
   const myUpiId = "gowtham114411-1@okicici"; 
-  const bookingAdvanceAmount = "1.00"; // Fixed Advance Amount
+  const bookingAdvanceAmount = "15.00"; // Fixed Advance Amount
   
   // UPI Link with Auto-Amount
   const upiLink = `upi://pay?pa=${myUpiId}&pn=AagamaVedham&am=${bookingAdvanceAmount}&cu=INR`;
