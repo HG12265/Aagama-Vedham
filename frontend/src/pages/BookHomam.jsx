@@ -4,12 +4,7 @@ import axios from 'axios';
 
 export default function BookHomam() {
   const [formData, setFormData] = useState({
-    userName: '',
-    phone: '',
-    panditName: '',
-    homamName: '',
-    bookingDate: '',
-    address: ''
+    userName: '', phone: '', panditName: '', homamName: '', bookingDate: '', address: ''
   });
   
   const [message, setMessage] = useState('');
@@ -19,20 +14,15 @@ export default function BookHomam() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-
     if (!token) {
       alert("Please login to book a Homam! 🙏");
       navigate('/login');
-    } else if (user) {
-      // Login aana user-oda Name-a auto-va form-la fill pandrom
-      setFormData((prev) => ({ ...prev, userName: user.name }));
-    }
+    } else if (user) setFormData((prev) => ({ ...prev, userName: user.name }));
   }, [navigate]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData,[e.target.name]: e.target.value });
 
+  // DIRECT SUBMIT (No Payment)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -40,13 +30,11 @@ export default function BookHomam() {
     
     try {
       const token = localStorage.getItem('token'); 
-      const res = await axios.post('http://localhost:5000/api/bookings/book', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/book`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       setMessage({ type: 'success', text: res.data.message });
-      
-      // Success aanathum form clear pandrom
       setFormData({ userName: '', phone: '', panditName: '', homamName: '', bookingDate: '', address: '' });
       
     } catch (err) {
@@ -61,7 +49,7 @@ export default function BookHomam() {
       
       <div className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row border border-orange-100">
         
-        {/* Left Side Devotional Image / Banner */}
+        {/* Left Side Banner */}
         <div className="md:w-2/5 bg-gradient-to-br from-orange-600 to-orange-800 p-10 text-white flex flex-col justify-center relative overflow-hidden hidden md:flex">
           <div className="absolute top-[-20%] left-[-20%] w-64 h-64 bg-orange-400 rounded-full blur-3xl opacity-30"></div>
           <div className="relative z-10">
@@ -91,28 +79,20 @@ export default function BookHomam() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Name */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-gray-700 font-bold text-sm">Full Name</label>
-                <input type="text" name="userName" value={formData.userName} onChange={handleChange} required placeholder="Enter your name"
-                  className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all" />
+                <input type="text" name="userName" value={formData.userName} onChange={handleChange} required placeholder="Enter your name" className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all" />
               </div>
-
-              {/* Phone Number */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-gray-700 font-bold text-sm">Phone Number</label>
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required placeholder="Enter WhatsApp number"
-                  className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all" />
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required placeholder="WhatsApp number" className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all" />
               </div>
             </div>
 
-            {/* Homam Selection */}
             <div className="flex flex-col gap-1.5">
               <label className="text-gray-700 font-bold text-sm">Select Homam</label>
-              <select name="homamName" value={formData.homamName} onChange={handleChange} required
-                className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer">
+              <select name="homamName" value={formData.homamName} onChange={handleChange} required className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer">
                 <option value="" disabled>-- Choose a Sacred Ritual --</option>
                 <option value="Ganapathi Homam">Ganapathi Homam 🐘</option>
                 <option value="Navagraha Homam">Navagraha Homam 🪐</option>
@@ -124,11 +104,9 @@ export default function BookHomam() {
               </select>
             </div>
 
-            {/* Pandit Selection */}
             <div className="flex flex-col gap-1.5">
               <label className="text-gray-700 font-bold text-sm">Select Vedic Pandit</label>
-              <select name="panditName" value={formData.panditName} onChange={handleChange} required
-                className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer">
+              <select name="panditName" value={formData.panditName} onChange={handleChange} required className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer">
                 <option value="" disabled>-- Choose a Pandit --</option>
                 <option value="Ajai Pattahchariyar">Ajai Pattahchariyar</option>
                 <option value="Rajasekaran Iyengar">Rajasekaran Iyengar</option>
@@ -137,26 +115,19 @@ export default function BookHomam() {
               </select>
             </div>
 
-            {/* Date Selection */}
             <div className="flex flex-col gap-1.5">
               <label className="text-gray-700 font-bold text-sm">Preferred Date</label>
-              <input type="date" name="bookingDate" value={formData.bookingDate} onChange={handleChange} required
-                className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer" />
+              <input type="date" name="bookingDate" value={formData.bookingDate} onChange={handleChange} required className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all cursor-pointer" />
             </div>
 
-            {/* Address */}
             <div className="flex flex-col gap-1.5">
               <label className="text-gray-700 font-bold text-sm">Full Address</label>
-              <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" placeholder="Enter your complete address with pincode..."
-                className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all resize-none"></textarea>
+              <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" placeholder="Enter complete address with pincode..." className="p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all resize-none"></textarea>
             </div>
 
-            {/* Submit Button */}
-            <button type="submit" disabled={loading}
-              className={`w-full text-white font-bold py-3.5 rounded-xl shadow-lg transition-all transform mt-4 flex justify-center items-center gap-2 ${loading ? 'bg-orange-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700 hover:-translate-y-1 hover:shadow-orange-500/30'}`}>
+            <button type="submit" disabled={loading} className={`w-full text-white font-bold py-3.5 rounded-xl shadow-lg transition-all transform mt-4 flex justify-center items-center gap-2 ${loading ? 'bg-orange-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700 hover:-translate-y-1 hover:shadow-orange-500/30'}`}>
               {loading ? 'Booking...' : 'Confirm Divine Booking 🙏'}
             </button>
-            
           </form>
         </div>
       </div>

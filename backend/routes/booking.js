@@ -1,34 +1,24 @@
 const express = require('express');
 const Booking = require('../models/Booking');
-const User = require('../models/User'); // User email theda idhu thevai
+const User = require('../models/User');
 const verifyToken = require('../middleware/authMiddleware');
-const sendEmail = require('../utils/sendEmail'); // Namma puthu email utility
+const sendEmail = require('../utils/sendEmail');
 
 const router = express.Router();
 
-// 1. HOMAM BOOK PANDRA API
+// 1. HOMAM BOOK API ✨ (Clean - No Payment)
 router.post('/book', verifyToken, async (req, res) => {
     try {
-        const { userName, phone, panditName, homamName, bookingDate, address  } = req.body;
-
-        const newBooking = new Booking({
-            userId: req.user.id, 
-            userName, 
-            phone, 
-            panditName, 
-            homamName,
-            bookingDate,
-            address
+        const { userName, phone, panditName, homamName, bookingDate, address } = req.body;
+        
+        const newBooking = new Booking({ 
+            userId: req.user.id, userName, phone, panditName, homamName, bookingDate, address 
         });
-
         await newBooking.save(); 
 
-        // User-oda email id-ya database-la irundhu edukkrom
         const user = await User.findById(req.user.id);
 
-        // ==========================================
-        // ✉️ EMAIL 1: USER-KU ANUPPURA MAIL
-        // ==========================================
+        // User Mail
         const userSubject = `Booking Confirmed: ${homamName} 🙏`;
         const userHtml = `
             <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ffedd5; padding: 20px; border-radius: 10px;">
@@ -80,7 +70,7 @@ router.post('/book', verifyToken, async (req, res) => {
     }
 });
 
-// 2. USER-ODA BOOKINGS-A PAAKRA API
+// 2. USER'S OWN BOOKINGS API
 router.get('/my-bookings', verifyToken, async (req, res) => {
     try {
         const bookings = await Booking.find({ userId: req.user.id }).sort({ createdAt: -1 });
@@ -90,11 +80,10 @@ router.get('/my-bookings', verifyToken, async (req, res) => {
     }
 });
 
+// 3. 👑 ADMIN API: GET ALL BOOKINGS
 router.get('/all-bookings', verifyToken, async (req, res) => {
     try {
-        // Role 'admin' ah irundha mattum thaan data anuppuvom (Security)
         if (req.user.role !== 'admin') return res.status(403).json({ message: "Access Denied! Admins only ❌" });
-        
         const allBookings = await Booking.find().sort({ createdAt: -1 });
         res.status(200).json(allBookings);
     } catch (err) {
@@ -102,6 +91,7 @@ router.get('/all-bookings', verifyToken, async (req, res) => {
     }
 });
 
+// 4. 👑 ADMIN API: UPDATE BOOKING STATUS
 router.put('/update-status/:id', verifyToken, async (req, res) => {
     try {
         if (req.user.role !== 'admin') return res.status(403).json({ message: "Access Denied! Admins only ❌" });
@@ -109,12 +99,9 @@ router.put('/update-status/:id', verifyToken, async (req, res) => {
         const { status } = req.body;
         const bookingId = req.params.id;
 
-        // Database-la status-a update pandradhu
         const updatedBooking = await Booking.findByIdAndUpdate(bookingId, { status }, { new: true });
-        
         if (!updatedBooking) return res.status(404).json({ message: "Booking not found!" });
 
-        // Status update aana udane Customer-ku Email anuppura logic ✉️
         const user = await User.findById(updatedBooking.userId);
         if(user) {
             const statusColor = status === 'Confirmed' ? 'blue' : status === 'Completed' ? 'green' : 'red';
