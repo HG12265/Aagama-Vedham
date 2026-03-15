@@ -9,7 +9,7 @@ const router = express.Router();
 // 1. HOMAM BOOK PANDRA API
 router.post('/book', verifyToken, async (req, res) => {
     try {
-        const { userName, phone, panditName, homamName, bookingDate, address, transactionId } = req.body;
+        const { userName, phone, panditName, homamName, bookingDate, address  } = req.body;
 
         const newBooking = new Booking({
             userId: req.user.id, 
@@ -18,8 +18,7 @@ router.post('/book', verifyToken, async (req, res) => {
             panditName, 
             homamName,
             bookingDate,
-            address,
-            transactionId
+            address
         });
 
         await newBooking.save(); 
