@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar'; // Puthusa add pannadhu
+import Navbar from './components/Navbar'; 
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import BookHomam from './pages/BookHomam';
@@ -25,7 +26,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </main>
-
+        <Footer />
       </div>
     </Router>
   );
