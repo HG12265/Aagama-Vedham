@@ -21,7 +21,7 @@ export default function Login() {
     try {
       if (isLogin) {
         // LOGIN API CALL
-        const res = await axios.post('http://localhost:5000/api/auth/login', {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
           email: formData.email,
           password: formData.password
         });
@@ -36,7 +36,7 @@ export default function Login() {
 
       } else {
         // REGISTER API CALL
-        const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, formData);
         setMessage(res.data.message);
         setTimeout(() => setIsLogin(true), 1500); // Register aanadhum Login page-ku mathidrom
       }
